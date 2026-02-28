@@ -105,6 +105,7 @@ export default function Phase1Conexao({ onInteracao, modoCompacto = false, isLan
 
   const simbolos = modoCompacto ? FASE1_SIMBOLOS_COMPACTO : FASE1_SIMBOLOS;
   const colunas  = modoCompacto ? 3 : 4;
+  const linhas   = modoCompacto ? 2 : 4;
   const gap      = modoCompacto ? 14 : 9;
 
   return (
@@ -135,9 +136,10 @@ export default function Phase1Conexao({ onInteracao, modoCompacto = false, isLan
       <div style={{
         flex: 1,
         minHeight: 0,
+        overflow: 'hidden',
         display: 'grid',
         gridTemplateColumns: `repeat(${colunas}, 1fr)`,
-        gridAutoRows: '1fr',
+        gridTemplateRows: `repeat(${linhas}, 1fr)`,
         gap,
         width: '100%',
       }}>
