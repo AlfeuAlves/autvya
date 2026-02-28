@@ -164,7 +164,7 @@ export default function ChildInterface() {
 
   return (
     <div style={{
-      minHeight: '100vh',
+      height: '100vh',
       background: 'linear-gradient(180deg, #6EC4E8 0%, #93D3EF 22%, #BDE5F5 50%, #DFF2FB 72%, #EFF8FD 100%)',
       display: 'flex',
       flexDirection: 'column',

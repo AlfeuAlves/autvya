@@ -108,7 +108,7 @@ export default function Phase1Conexao({ onInteracao, modoCompacto = false, isLan
   const gap      = modoCompacto ? 14 : 9;
 
   return (
-    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '0 12px 12px', position: 'relative', zIndex: 2 }}>
+    <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', padding: '0 12px 12px', position: 'relative', zIndex: 2 }}>
 
       {/* HUD de estrelas – mais compacto em landscape */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, marginBottom: isLandscape ? 4 : 8 }}>
@@ -134,6 +134,7 @@ export default function Phase1Conexao({ onInteracao, modoCompacto = false, isLan
       {/* Grid dinâmico – preenche toda a área disponível */}
       <div style={{
         flex: 1,
+        minHeight: 0,
         display: 'grid',
         gridTemplateColumns: `repeat(${colunas}, 1fr)`,
         gridAutoRows: '1fr',
