@@ -39,8 +39,8 @@ function PictoButton({ id, onPress }) {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: 6,
-        padding: '14px 8px 12px',
+        gap: 4,
+        padding: '8px 6px 8px',
         width: '100%',
         height: '100%',
         position: 'relative',
@@ -49,7 +49,7 @@ function PictoButton({ id, onPress }) {
     >
       {/* brilhos */}
       <span style={{ position: 'absolute', top: 7, right: 9, fontSize: 10, opacity: 0.65 }}>✦</span>
-      <span style={{ fontSize: 'clamp(2rem, 9vw, 3rem)', lineHeight: 1 }}>{sym.icon}</span>
+      <span style={{ fontSize: 'clamp(1.8rem, 8vw, 2.7rem)', lineHeight: 1 }}>{sym.icon}</span>
       <span style={{ color: 'white', fontWeight: 900, fontSize: 'clamp(0.7rem, 2.8vw, 0.95rem)', letterSpacing: '0.04em', textShadow: `0 2px 4px ${sym.shadow}` }}>
         {sym.label.toUpperCase()}
       </span>
