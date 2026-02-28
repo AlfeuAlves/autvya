@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  senhaHash String
+  nome      String
+  criadoEm DateTime @default(now())
+  filhos    Child[]
+
+  @@map("users")
+}
+
+model Child {
+  id             String        @id @default(cuid())
+  usuarioId      String
+  usuario        User          @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  nome           String
+  idade          Int
+  fase           Fase          @default(CONEXAO)
+  configuracoes  Json          @default("{}")
+  criadoEm      DateTime      @default(now())
+  atualizadoEm  DateTime      @updatedAt
+  interacoes     Interaction[]
+  audios         Audio[]
+
+  @@map("children")
+}
+
+model Interaction {
+  id             String   @id @default(cuid())
+  criancaId      String
+  crianca        Child    @relation(fields: [criancaId], references: [id], onDelete: Cascade)
+  botao          String
+  timestamp      DateTime @default(now())
+  duracaoSessao  Int?     // em segundos
+
+  @@map("interactions")
+}
+
+model Audio {
+  id        String   @id @default(cuid())
+  criancaId String
+  crianca   Child    @relation(fields: [criancaId], references: [id], onDelete: Cascade)
+  tipo      String
+  url       String
+  criadoEm DateTime @default(now())
+
+  @@map("audios")
+}
+
+enum Fase {
+  CONEXAO
+  ESCOLHA
+  COMUNICACAO
+}
