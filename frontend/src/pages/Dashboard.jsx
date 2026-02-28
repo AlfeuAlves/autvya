@@ -292,12 +292,13 @@ export default function Dashboard() {
             {/* Botão Iniciar sessão */}
             <button
               onClick={() => navigate(`/crianca/${crianca.id}`)}
-              style={{ width: '100%', background: 'linear-gradient(135deg, #4A90D9, #2B6FBF)', color: 'white', border: 'none', borderRadius: 20, padding: '16px 0', fontWeight: 900, fontSize: 17, cursor: 'pointer', boxShadow: '0 6px 0 #1A4F8A, 0 10px 20px rgba(42,80,160,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, transition: 'transform 0.1s, box-shadow 0.1s' }}
-              onPointerDown={(e) => { e.currentTarget.style.transform = 'translateY(4px)'; e.currentTarget.style.boxShadow = '0 2px 0 #1A4F8A'; }}
-              onPointerUp={(e) => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '0 6px 0 #1A4F8A, 0 10px 20px rgba(42,80,160,0.25)'; }}
+              style={{ width: '100%', background: 'linear-gradient(135deg, #FFD700, #FF9500)', color: '#7A3800', border: 'none', borderRadius: 24, padding: '20px 0', fontWeight: 900, fontSize: 22, cursor: 'pointer', boxShadow: '0 7px 0 #B86A00, 0 12px 28px rgba(255,149,0,0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, transition: 'transform 0.1s, box-shadow 0.1s', letterSpacing: '0.02em' }}
+              onPointerDown={(e) => { e.currentTarget.style.transform = 'translateY(5px)'; e.currentTarget.style.boxShadow = '0 2px 0 #B86A00'; }}
+              onPointerUp={(e) => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '0 7px 0 #B86A00, 0 12px 28px rgba(255,149,0,0.35)'; }}
+              onPointerLeave={(e) => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '0 7px 0 #B86A00, 0 12px 28px rgba(255,149,0,0.35)'; }}
             >
-              <span style={{ fontSize: 22 }}>🎮</span>
-              Iniciar Sessão
+              <span style={{ fontSize: 28 }}>🚀</span>
+              Vamos lá!
             </button>
 
             {/* Progresso Hoje */}

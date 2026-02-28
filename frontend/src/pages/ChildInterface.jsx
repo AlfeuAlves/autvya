@@ -7,7 +7,7 @@ import RobotMascot from '../components/RobotMascot.jsx';
 import Phase1Conexao from './phases/Phase1Conexao.jsx';
 import Phase2Escolha from './phases/Phase2Escolha.jsx';
 import Phase3Comunicacao from './phases/Phase3Comunicacao.jsx';
-import { checkReadiness } from '../data/vocabulary.js';
+import { checkReadiness, SYMBOLS } from '../data/vocabulary.js';
 
 const FASE_LABELS = {
   CONEXAO:     { label: 'Conexão',     emoji: '🌱', cor: '#4A90D9' },
@@ -38,6 +38,12 @@ export default function ChildInterface() {
   const [robotWaving, setRobotWaving] = useState(false);
   const [showReadiness, setShowReadiness] = useState(false);
 
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [modoCompacto, setModoCompacto] = useState(false);
+  const [isLandscape, setIsLandscape] = useState(() =>
+    typeof window !== 'undefined' && window.matchMedia('(orientation: landscape)').matches
+  );
+
   const [sessaoInicio] = useState(Date.now());
   const [interacoesBuffer, setInteracoesBuffer] = useState([]);
   const syncTimer = useRef(null);
@@ -49,6 +55,34 @@ export default function ChildInterface() {
       syncInteracoes();
     };
   }, [criancaId]);
+
+  // Detector de orientação
+  useEffect(() => {
+    const mq = window.matchMedia('(orientation: landscape)');
+    const handler = (e) => setIsLandscape(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+
+  // Fullscreen automático + trava landscape ao montar
+  useEffect(() => {
+    async function tentarFullscreen() {
+      try {
+        await document.documentElement.requestFullscreen?.();
+        setIsFullscreen(true);
+        // Trava orientação landscape (Android Chrome/Firefox; falha silenciosa em iOS)
+        await screen.orientation?.lock?.('landscape').catch(() => {});
+      } catch { /* iOS Safari não suporta – falha silenciosa */ }
+    }
+    tentarFullscreen();
+    const onChange = () => setIsFullscreen(!!document.fullscreenElement);
+    document.addEventListener('fullscreenchange', onChange);
+    return () => {
+      document.removeEventListener('fullscreenchange', onChange);
+      if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+      screen.orientation?.unlock?.();
+    };
+  }, []);
 
   // Sync automático a cada 30s
   useEffect(() => {
@@ -86,10 +120,19 @@ export default function ChildInterface() {
     }
   }, [interacoesBuffer, criancaId]);
 
+  async function toggleFullscreen() {
+    try {
+      if (document.fullscreenElement) {
+        await document.exitFullscreen();
+      } else {
+        await document.documentElement.requestFullscreen();
+      }
+    } catch { /* silencioso */ }
+  }
+
   // Chamado por qualquer fase quando a criança interage
   function handleInteracao(botaoId, extras = {}) {
-    const sym = botaoId.startsWith('frase:') ? botaoId : botaoId;
-    speak(botaoId);
+    speak(SYMBOLS[botaoId]?.tts || botaoId);
     setRobotWaving(true);
     setTimeout(() => setRobotWaving(false), 800);
 
@@ -113,39 +156,60 @@ export default function ChildInterface() {
 
   const faseInfo = FASE_LABELS[crianca.fase];
 
+  // Dimensões adaptativas
+  const footerH   = isLandscape ? 40  : 82;
+  const grassH    = isLandscape ? 32  : 70;
+  const robotSize = isLandscape ? 30  : 60;
+  const hPad      = isLandscape ? '5px 14px 3px' : '14px 18px 8px';
+
   return (
     <div style={{
       minHeight: '100vh',
       background: 'linear-gradient(180deg, #6EC4E8 0%, #93D3EF 22%, #BDE5F5 50%, #DFF2FB 72%, #EFF8FD 100%)',
       display: 'flex',
       flexDirection: 'column',
-      paddingBottom: 86,
+      paddingBottom: footerH,
       position: 'relative',
       overflow: 'hidden',
     }}>
-      {/* Nuvens */}
-      <Cloud style={{ left: '-6px', top: '12px' }} />
-      <Cloud style={{ right: '8px', top: '6px', transform: 'scale(0.8)' }} />
+      {/* Nuvens – ocultas em landscape para não ocupar espaço */}
+      {!isLandscape && <Cloud style={{ left: '-6px', top: '12px' }} />}
+      {!isLandscape && <Cloud style={{ right: '8px', top: '6px', transform: 'scale(0.8)' }} />}
 
       {/* ── Header ──────────────────────────────────────────────────── */}
-      <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 18px 8px', position: 'relative', zIndex: 10 }}>
+      <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: hPad, position: 'relative', zIndex: 10 }}>
         <button
           onClick={() => { syncInteracoes(); navigate('/dashboard'); }}
-          style={{ width: 40, height: 40, background: 'rgba(255,255,255,0.72)', border: 'none', borderRadius: 12, fontSize: 18, cursor: 'pointer', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          style={{ width: 36, height: 36, background: 'rgba(255,255,255,0.72)', border: 'none', borderRadius: 10, fontSize: 18, cursor: 'pointer', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
         >
           ←
         </button>
 
         <div style={{ textAlign: 'center' }}>
-          <AuTvyaLogo size="sm" />
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: `${faseInfo.cor}22`, border: `1.5px solid ${faseInfo.cor}55`, borderRadius: 20, padding: '2px 10px', marginTop: 3 }}>
-            <span style={{ fontSize: 12 }}>{faseInfo.emoji}</span>
+          {!isLandscape && <AuTvyaLogo size="sm" />}
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: `${faseInfo.cor}22`, border: `1.5px solid ${faseInfo.cor}55`, borderRadius: 20, padding: '2px 10px', marginTop: isLandscape ? 0 : 3 }}>
+            <span style={{ fontSize: 11 }}>{faseInfo.emoji}</span>
             <span style={{ fontSize: 11, fontWeight: 800, color: faseInfo.cor }}>{faseInfo.label}</span>
           </div>
         </div>
 
-        <div style={{ width: 40, height: 40, background: 'rgba(255,248,220,0.9)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22 }}>
-          ⭐
+        <div style={{ display: 'flex', gap: 6 }}>
+          {crianca?.fase === 'CONEXAO' && (
+            <button
+              onClick={() => setModoCompacto((v) => !v)}
+              title={modoCompacto ? 'Mostrar 16 ícones' : 'Mostrar 6 ícones'}
+              style={{ width: 36, height: 36, background: 'rgba(255,255,255,0.72)', border: 'none', borderRadius: 10, fontSize: 18, cursor: 'pointer', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            >
+              {modoCompacto ? '⊞' : '⊟'}
+            </button>
+          )}
+          <button
+            onClick={toggleFullscreen}
+            title={isFullscreen ? 'Sair da tela cheia' : 'Tela cheia'}
+            style={{ width: 36, height: 36, background: 'rgba(255,255,255,0.72)', border: 'none', borderRadius: 10, fontSize: 18, cursor: 'pointer', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          >
+            ⛶
+          </button>
         </div>
       </header>
 
@@ -167,7 +231,7 @@ export default function ChildInterface() {
 
       {/* ── Fase ativa ──────────────────────────────────────────────── */}
       {crianca.fase === 'CONEXAO' && (
-        <Phase1Conexao onInteracao={handleInteracao} />
+        <Phase1Conexao onInteracao={handleInteracao} modoCompacto={modoCompacto} isLandscape={isLandscape} />
       )}
       {crianca.fase === 'ESCOLHA' && (
         <Phase2Escolha onInteracao={handleInteracao} />
@@ -177,12 +241,14 @@ export default function ChildInterface() {
       )}
 
       {/* ── Rodapé: grama + mascote + estrela ───────────────────────── */}
-      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, height: 82, zIndex: 1, pointerEvents: 'none' }}>
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 70, background: 'linear-gradient(180deg, #7BC745 0%, #5DA828 100%)', borderRadius: '50% 50% 0 0 / 18px 18px 0 0' }} />
-        <div style={{ position: 'absolute', bottom: 10, left: 18, pointerEvents: 'none' }}>
-          <RobotMascot size={60} waving={robotWaving} />
+      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, height: footerH, zIndex: 1, pointerEvents: 'none' }}>
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: grassH, background: 'linear-gradient(180deg, #7BC745 0%, #5DA828 100%)', borderRadius: '50% 50% 0 0 / 14px 14px 0 0' }} />
+        <div style={{ position: 'absolute', bottom: 4, left: 14, pointerEvents: 'none' }}>
+          <RobotMascot size={robotSize} waving={robotWaving} />
         </div>
-        <div style={{ position: 'absolute', bottom: 20, right: 22, fontSize: 26, filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.18))' }}>⭐</div>
+        {!isLandscape && (
+          <div style={{ position: 'absolute', bottom: 16, right: 22, fontSize: 26, filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.18))' }}>⭐</div>
+        )}
       </div>
 
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>

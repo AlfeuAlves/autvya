@@ -8,7 +8,7 @@
  * Critério de avanço: 20+ interações, 7+ dias, 4+ símbolos distintos.
  */
 import { useState, useRef } from 'react';
-import { SYMBOLS, FASE1_SIMBOLOS } from '../../data/vocabulary.js';
+import { SYMBOLS, FASE1_SIMBOLOS, FASE1_SIMBOLOS_COMPACTO } from '../../data/vocabulary.js';
 
 function PictoButton({ id, onPress }) {
   const [pressed, setPressed] = useState(false);
@@ -42,7 +42,7 @@ function PictoButton({ id, onPress }) {
         gap: 6,
         padding: '14px 8px 12px',
         width: '100%',
-        aspectRatio: '1',
+        height: '100%',
         position: 'relative',
         overflow: 'hidden',
       }}
@@ -77,7 +77,7 @@ function CelebracaoOverlay({ onClose }) {
   );
 }
 
-export default function Phase1Conexao({ onInteracao }) {
+export default function Phase1Conexao({ onInteracao, modoCompacto = false, isLandscape = false }) {
   const [estrelas, setEstrelas] = useState(0);
   const [feedbackId, setFeedbackId] = useState(null);
   const [celebrando, setCelebrando] = useState(false);
@@ -103,14 +103,18 @@ export default function Phase1Conexao({ onInteracao }) {
 
   const sym = feedbackId ? SYMBOLS[feedbackId] : null;
 
-  return (
-    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '0 16px', position: 'relative', zIndex: 2 }}>
+  const simbolos = modoCompacto ? FASE1_SIMBOLOS_COMPACTO : FASE1_SIMBOLOS;
+  const colunas  = modoCompacto ? 3 : 4;
+  const gap      = modoCompacto ? 14 : 9;
 
-      {/* HUD de estrelas */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, marginBottom: 10 }}>
-        <span style={{ fontSize: 22 }}>⭐</span>
-        <span style={{ fontWeight: 900, fontSize: 20, color: '#1A3A6B' }}>{estrelas}</span>
-        {estrelas > 0 && (
+  return (
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '0 12px 12px', position: 'relative', zIndex: 2 }}>
+
+      {/* HUD de estrelas – mais compacto em landscape */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, marginBottom: isLandscape ? 4 : 8 }}>
+        <span style={{ fontSize: isLandscape ? 16 : 22 }}>⭐</span>
+        <span style={{ fontWeight: 900, fontSize: isLandscape ? 15 : 20, color: '#1A3A6B' }}>{estrelas}</span>
+        {estrelas > 0 && !isLandscape && (
           <span style={{ fontSize: 12, color: '#7A9EB8', fontWeight: 600 }}>
             {MARCO - (estrelas % MARCO || MARCO)} para próxima celebração!
           </span>
@@ -127,17 +131,26 @@ export default function Phase1Conexao({ onInteracao }) {
         </div>
       )}
 
-      {/* Grid 2×3 */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, maxWidth: 380, margin: '0 auto', width: '100%' }}>
-        {FASE1_SIMBOLOS.map((id) => (
+      {/* Grid dinâmico – preenche toda a área disponível */}
+      <div style={{
+        flex: 1,
+        display: 'grid',
+        gridTemplateColumns: `repeat(${colunas}, 1fr)`,
+        gridAutoRows: '1fr',
+        gap,
+        width: '100%',
+      }}>
+        {simbolos.map((id) => (
           <PictoButton key={id} id={id} onPress={handlePress} />
         ))}
       </div>
 
-      {/* Dica visual (aided language stimulation) */}
-      <div style={{ marginTop: 14, textAlign: 'center', color: 'rgba(26,58,107,0.55)', fontSize: 13, fontWeight: 600 }}>
-        Toque em uma imagem para falar 🔊
-      </div>
+      {/* Dica visual – oculta em landscape para maximizar área do grid */}
+      {!isLandscape && (
+        <div style={{ marginTop: 8, textAlign: 'center', color: 'rgba(26,58,107,0.55)', fontSize: 13, fontWeight: 600 }}>
+          Toque em uma imagem para falar 🔊
+        </div>
+      )}
 
       {/* Celebração */}
       {celebrando && <CelebracaoOverlay onClose={() => setCelebrando(false)} />}

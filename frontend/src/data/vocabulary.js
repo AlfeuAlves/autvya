@@ -50,10 +50,24 @@ export const SYMBOLS = {
   tchau:     { icon: '🤚', label: 'Tchau',     bg: '#FFCA28', shadow: '#FF6F00', tts: 'Tchau'      },
   obrigado:  { icon: '😊', label: 'Obrigado',  bg: '#A5D6A7', shadow: '#2E7D32', tts: 'Obrigado'   },
   sim:       { icon: '✅', label: 'Sim',       bg: '#66BB6A', shadow: '#1B5E20', tts: 'Sim'        },
+
+  // ── FASE 1 expandida – 4 novos símbolos nucleares ─────────────────────────
+  banheiro:  { icon: '🚽', label: 'Banheiro',  bg: '#5C6BC0', shadow: '#283593', tts: 'Banheiro'   },
+  dor:       { icon: '🤕', label: 'Dói',       bg: '#EF9A9A', shadow: '#C62828', tts: 'Dói'        },
+  parar:     { icon: '✋', label: 'Parar',     bg: '#FF5722', shadow: '#BF360C', tts: 'Parar'      },
+  acabou:    { icon: '🏁', label: 'Acabou',    bg: '#A5D6A7', shadow: '#2E7D32', tts: 'Acabou'     },
 };
 
-// ── Fase 1: grade de núcleo ────────────────────────────────────────────────
-export const FASE1_SIMBOLOS = ['agua', 'comer', 'brincar', 'mais', 'dormir', 'nao'];
+// ── Fase 1: grade compacta (6 símbolos originais – usada na Fase 2) ────────
+export const FASE1_SIMBOLOS_COMPACTO = ['agua', 'comer', 'brincar', 'mais', 'dormir', 'nao'];
+
+// ── Fase 1: grade completa (16 símbolos – grid 4×4) ───────────────────────
+export const FASE1_SIMBOLOS = [
+  'agua',     'comer',   'brincar', 'mais',
+  'dormir',   'nao',     'sim',     'ajuda',
+  'banheiro', 'dor',     'feliz',   'triste',
+  'parar',    'oi',      'quero',   'acabou',
+];
 
 // ── Fase 2: sub-escolhas por categoria ────────────────────────────────────
 export const FASE2_CONTEXTOS = {

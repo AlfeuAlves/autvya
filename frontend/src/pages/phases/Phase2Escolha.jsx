@@ -12,7 +12,7 @@
  *   Nível 1 → toque em categoria → Nível 2 → escolha específica → TTS + feedback → Nível 1
  */
 import { useState, useRef } from 'react';
-import { SYMBOLS, FASE1_SIMBOLOS, FASE2_CONTEXTOS } from '../../data/vocabulary.js';
+import { SYMBOLS, FASE1_SIMBOLOS_COMPACTO as FASE1_SIMBOLOS, FASE2_CONTEXTOS } from '../../data/vocabulary.js';
 
 function PictoButton({ id, onPress, size = 'large' }) {
   const [pressed, setPressed] = useState(false);
