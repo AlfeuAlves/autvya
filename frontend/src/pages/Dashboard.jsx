@@ -3,20 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import api from '../services/api.js';
 import AuTvyaLogo from '../components/AuTvyaLogo.jsx';
 import RobotMascot from '../components/RobotMascot.jsx';
+import { SYMBOLS } from '../data/vocabulary.js';
 
 const FASE_INFO = {
   CONEXAO:     { label: 'Conexão',     index: 0 },
   ESCOLHA:     { label: 'Escolha',     index: 1 },
   COMUNICACAO: { label: 'Comunicação', index: 2 },
-};
-
-const PICTOGRAM_EMOJI = {
-  agua: '💧', comer: '🍎', brincar: '🎈',
-  mais: '➕', dormir: '😴', nao: '✖️',
-};
-const PICTOGRAM_LABELS = {
-  agua: 'Água', comer: 'Comer', brincar: 'Brincar',
-  mais: 'Mais', dormir: 'Dormir', nao: 'Não',
 };
 
 function PhaseProgressBar({ fase }) {
@@ -87,16 +79,13 @@ function MetricCard({ icon, label, value, bg, iconBg }) {
 function ActivityRow({ botao, timestamp }) {
   const date = new Date(timestamp);
   const time = date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-  const emoji = PICTOGRAM_EMOJI[botao] || '❓';
-  const label = PICTOGRAM_LABELS[botao] || botao;
-
-  const rowColors = {
-    agua: '#EBF6FF', comer: '#FFF0EB', brincar: '#EFFDE6',
-    mais: '#F3EDFF', dormir: '#E6FFFE', nao: '#FFF0F0',
-  };
+  const sym = SYMBOLS[botao];
+  const emoji = sym?.icon || '❓';
+  const label = sym?.label || botao;
+  const rowBg = sym ? `${sym.bg}44` : '#F5F7FA';
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', background: rowColors[botao] || '#F5F7FA', borderRadius: 14, padding: '10px 14px', gap: 12 }}>
+    <div style={{ display: 'flex', alignItems: 'center', background: rowBg, borderRadius: 14, padding: '10px 14px', gap: 12 }}>
       <div style={{ width: 36, height: 36, borderRadius: 10, background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, boxShadow: '0 1px 4px rgba(0,0,0,0.08)', flexShrink: 0 }}>
         {emoji}
       </div>
@@ -112,6 +101,7 @@ export default function Dashboard() {
   const [filhos, setFilhos] = useState([]);
   const [selectedChild, setSelectedChild] = useState(null);
   const [metricas, setMetricas] = useState(null);
+  const [toquesHoje, setToquesHoje] = useState(0);
   const [interacoesHoje, setInteracoesHoje] = useState([]);
   const [loading, setLoading] = useState(true);
   const [progressoAberto, setProgressoAberto] = useState(true);
@@ -130,11 +120,15 @@ export default function Dashboard() {
 
   async function loadMetricas(id) {
     try {
-      const [metRes, repRes] = await Promise.all([
+      // Pequeno delay para garantir que o sync da sessão anterior completou
+      await new Promise((r) => setTimeout(r, 600));
+      const [metRes, metHojeRes, repRes] = await Promise.all([
         api.get(`/interactions/${id}/metrics?dias=30`),
+        api.get(`/interactions/${id}/metrics?dias=1`),
         api.get(`/reports/${id}?dias=1`),
       ]);
       setMetricas(metRes.data.metricas);
+      setToquesHoje(metHojeRes.data.metricas?.totalInteracoes ?? 0);
       setInteracoesHoje((repRes.data.interacoesRecentes || []).slice(0, 6));
     } catch (err) { console.error(err); }
   }
@@ -275,14 +269,14 @@ export default function Dashboard() {
                 <MetricCard
                   icon="✅"
                   label="Toques Hoje"
-                  value={interacoesHoje.length}
+                  value={toquesHoje}
                   bg="rgba(235,255,240,0.95)"
                   iconBg="#C0F0CC"
                 />
                 <MetricCard
-                  icon={PICTOGRAM_EMOJI[metricas.botaoFavorito] || '⭐'}
+                  icon={SYMBOLS[metricas.botaoFavorito]?.icon || '⭐'}
                   label="Favorito"
-                  value={metricas.botaoFavorito ? PICTOGRAM_LABELS[metricas.botaoFavorito] : 'N/A'}
+                  value={SYMBOLS[metricas.botaoFavorito]?.label || 'N/A'}
                   bg="rgba(255,248,225,0.95)"
                   iconBg="#FFE680"
                 />
