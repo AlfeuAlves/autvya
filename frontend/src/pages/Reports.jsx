@@ -71,7 +71,7 @@ export default function Reports() {
       const { data } = await api.post('/ai/analise', {
         criancaId: selectedChild,
         dias: 30,
-      });
+      }, { timeout: 90000 }); // 90s — aguarda Render acordar + chamada Claude
       setAnaliseIA(data.analise);
     } catch (err) {
       setErrorIA(err.response?.data?.error || 'Erro ao gerar análise. Tente novamente.');
