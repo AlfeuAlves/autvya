@@ -112,8 +112,8 @@ export default function Dashboard() {
   useEffect(() => { loadData(); }, []);
   useEffect(() => { if (selectedChild) loadMetricas(selectedChild); }, [selectedChild]);
   useEffect(() => {
-    if (user?.id) setFotoUrl(localStorage.getItem(`autvya_foto_${user.id}`) || null);
-  }, [user?.id]);
+    setFotoUrl(localStorage.getItem('autvya_foto_perfil') || null);
+  }, []);
 
   async function loadData() {
     try {

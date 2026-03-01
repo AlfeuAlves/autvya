@@ -6,7 +6,7 @@ export default function Settings() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-  const fotoKey = `autvya_foto_${user?.id}`;
+  const fotoKey = 'autvya_foto_perfil';
   const [fotoUrl, setFotoUrl] = useState(() => localStorage.getItem(fotoKey) || null);
   const [fotoErro, setFotoErro] = useState(null);
   const inputFotoRef = useRef(null);
