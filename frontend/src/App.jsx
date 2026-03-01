@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext.jsx';
 import Layout from './components/Layout.jsx';
+import SplashScreen from './components/SplashScreen.jsx';
 
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
@@ -37,6 +39,17 @@ function PublicRoute({ children }) {
 }
 
 export default function App() {
+  const [showSplash, setShowSplash] = useState(
+    () => !sessionStorage.getItem('autvya_splash')
+  );
+
+  function handleSplashDone() {
+    sessionStorage.setItem('autvya_splash', '1');
+    setShowSplash(false);
+  }
+
+  if (showSplash) return <SplashScreen onDone={handleSplashDone} />;
+
   return (
     <BrowserRouter>
       <AuthProvider>
