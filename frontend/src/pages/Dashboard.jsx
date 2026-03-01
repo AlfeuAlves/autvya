@@ -100,7 +100,7 @@ function ActivityRow({ botao, timestamp }) {
 export default function Dashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [fotoUrl] = useState(() => localStorage.getItem(`autvya_foto_${user?.id}`) || null);
+  const [fotoUrl, setFotoUrl] = useState(null);
   const [filhos, setFilhos] = useState([]);
   const [selectedChild, setSelectedChild] = useState(null);
   const [metricas, setMetricas] = useState(null);
@@ -111,6 +111,9 @@ export default function Dashboard() {
 
   useEffect(() => { loadData(); }, []);
   useEffect(() => { if (selectedChild) loadMetricas(selectedChild); }, [selectedChild]);
+  useEffect(() => {
+    if (user?.id) setFotoUrl(localStorage.getItem(`autvya_foto_${user.id}`) || null);
+  }, [user?.id]);
 
   async function loadData() {
     try {
