@@ -4,6 +4,7 @@ import api from '../services/api.js';
 import AuTvyaLogo from '../components/AuTvyaLogo.jsx';
 import RobotMascot from '../components/RobotMascot.jsx';
 import { SYMBOLS } from '../data/vocabulary.js';
+import { useAuth } from '../context/AuthContext.jsx';
 
 const FASE_INFO = {
   CONEXAO:     { label: 'Conexão',     index: 0 },
@@ -98,6 +99,8 @@ function ActivityRow({ botao, timestamp }) {
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const [fotoUrl] = useState(() => localStorage.getItem(`autvya_foto_${user?.id}`) || null);
   const [filhos, setFilhos] = useState([]);
   const [selectedChild, setSelectedChild] = useState(null);
   const [metricas, setMetricas] = useState(null);
@@ -170,6 +173,25 @@ export default function Dashboard() {
 
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px 20px 12px', position: 'relative' }}>
+        {/* Avatar do responsável */}
+        <div style={{ position: 'absolute', left: 20 }}>
+          {fotoUrl ? (
+            <img
+              src={fotoUrl}
+              alt="Foto de perfil"
+              style={{ width: 42, height: 42, borderRadius: '50%', objectFit: 'cover', border: '2.5px solid white', boxShadow: '0 2px 8px rgba(0,0,0,0.15)', cursor: 'pointer' }}
+              onClick={() => navigate('/configuracoes')}
+            />
+          ) : (
+            <div
+              onClick={() => navigate('/configuracoes')}
+              style={{ width: 42, height: 42, background: 'rgba(255,255,255,0.85)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, fontWeight: 900, color: '#4A90D9', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', backdropFilter: 'blur(6px)' }}
+            >
+              {user?.nome?.[0]?.toUpperCase() || '👤'}
+            </div>
+          )}
+        </div>
+
         <AuTvyaLogo size="lg" />
         <div style={{ position: 'absolute', right: 20, display: 'flex', gap: 8 }}>
           <Link to="/sobre" style={{ width: 40, height: 40, background: 'rgba(255,255,255,0.75)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, backdropFilter: 'blur(6px)', textDecoration: 'none' }}>

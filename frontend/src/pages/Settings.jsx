@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useNavigate, Link } from 'react-router-dom';
 
@@ -6,6 +6,32 @@ export default function Settings() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const fotoKey = `autvya_foto_${user?.id}`;
+  const [fotoUrl, setFotoUrl] = useState(() => localStorage.getItem(fotoKey) || null);
+  const [fotoErro, setFotoErro] = useState(null);
+  const inputFotoRef = useRef(null);
+
+  function handleFotoChange(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    setFotoErro(null);
+    if (file.size > 2 * 1024 * 1024) {
+      setFotoErro('Imagem muito grande. Use menos de 2 MB.');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const base64 = ev.target.result;
+      localStorage.setItem(fotoKey, base64);
+      setFotoUrl(base64);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function removerFoto() {
+    localStorage.removeItem(fotoKey);
+    setFotoUrl(null);
+  }
 
   function handleLogout() {
     logout();
@@ -19,12 +45,56 @@ export default function Settings() {
       {/* Perfil do usuário */}
       <div className="card">
         <div className="flex items-center gap-4 mb-4">
-          <div className="w-14 h-14 bg-gradient-to-br from-primary to-secondary-500 rounded-2xl flex items-center justify-center text-white font-bold text-2xl">
-            {user?.nome?.[0]?.toUpperCase()}
+          {/* Avatar / foto */}
+          <div style={{ position: 'relative', flexShrink: 0 }}>
+            {fotoUrl ? (
+              <img
+                src={fotoUrl}
+                alt="Foto de perfil"
+                style={{ width: 64, height: 64, borderRadius: 18, objectFit: 'cover', border: '3px solid #E0EEF8' }}
+              />
+            ) : (
+              <div className="w-16 h-16 bg-gradient-to-br from-primary to-secondary-500 rounded-2xl flex items-center justify-center text-white font-bold text-2xl">
+                {user?.nome?.[0]?.toUpperCase()}
+              </div>
+            )}
+            {/* Botão câmera */}
+            <button
+              onClick={() => inputFotoRef.current?.click()}
+              style={{ position: 'absolute', bottom: -6, right: -6, width: 26, height: 26, background: '#4A90D9', border: '2px solid white', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, cursor: 'pointer' }}
+              title="Alterar foto"
+            >
+              📷
+            </button>
+            <input
+              ref={inputFotoRef}
+              type="file"
+              accept="image/*"
+              style={{ display: 'none' }}
+              onChange={handleFotoChange}
+            />
           </div>
-          <div>
+
+          <div style={{ flex: 1 }}>
             <p className="font-bold text-neutral-800">{user?.nome}</p>
             <p className="text-sm text-neutral-500">{user?.email}</p>
+            <div style={{ display: 'flex', gap: 8, marginTop: 6 }}>
+              <button
+                onClick={() => inputFotoRef.current?.click()}
+                style={{ fontSize: 12, fontWeight: 700, color: '#4A90D9', background: '#EBF4FF', border: 'none', borderRadius: 8, padding: '4px 10px', cursor: 'pointer' }}
+              >
+                {fotoUrl ? 'Trocar foto' : '+ Adicionar foto'}
+              </button>
+              {fotoUrl && (
+                <button
+                  onClick={removerFoto}
+                  style={{ fontSize: 12, fontWeight: 700, color: '#E53E3E', background: '#FFF0F0', border: 'none', borderRadius: 8, padding: '4px 10px', cursor: 'pointer' }}
+                >
+                  Remover
+                </button>
+              )}
+            </div>
+            {fotoErro && <p style={{ fontSize: 11, color: '#E53E3E', marginTop: 4 }}>{fotoErro}</p>}
           </div>
         </div>
         <div className="bg-neutral-50 rounded-xl p-3 text-xs text-neutral-500">
