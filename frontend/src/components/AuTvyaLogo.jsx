@@ -1,6 +1,6 @@
-export default function AuTvyaLogo({ size = 'lg' }) {
+export default function AuTvyaLogo({ size = 'lg', height: customHeight }) {
   const heights = { sm: 32, md: 40, lg: 52, xl: 68 };
-  const h = heights[size] || heights.lg;
+  const h = customHeight || heights[size] || heights.lg;
 
   return (
     <img

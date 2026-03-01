@@ -175,8 +175,13 @@ export default function Dashboard() {
       </div>
 
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 20px 12px' }}>
-        <AuTvyaLogo size="lg" />
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '11px 20px', position: 'relative' }}>
+        {/* Logo centralizada */}
+        <div style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>
+          <AuTvyaLogo height={62} />
+        </div>
+        {/* Espaçador para equilibrar os botões da direita */}
+        <div style={{ width: 88 }} />
         <div style={{ display: 'flex', gap: 8 }}>
           <Link to="/sobre" style={{ width: 40, height: 40, background: 'rgba(255,255,255,0.75)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, backdropFilter: 'blur(6px)', textDecoration: 'none' }}>
             🧠
