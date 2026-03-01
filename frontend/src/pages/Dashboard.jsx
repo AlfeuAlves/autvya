@@ -350,7 +350,7 @@ export default function Dashboard() {
 
       {/* Grama no rodapé */}
       <div style={{ position: 'fixed', bottom: 56, left: 0, right: 0, height: 55, background: 'linear-gradient(180deg, #7BC745 0%, #5DA828 100%)', borderRadius: '50% 50% 0 0 / 18px 18px 0 0', zIndex: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ textAlign: 'center', lineHeight: 1.3, marginTop: 10 }}>
+        <div style={{ textAlign: 'center', lineHeight: 1.3, marginTop: -8 }}>
           <p style={{ margin: 0, fontSize: 10, fontWeight: 800, color: 'rgba(255,255,255,0.9)', letterSpacing: '0.04em' }}>
             Alfeu Smart Solution
           </p>
