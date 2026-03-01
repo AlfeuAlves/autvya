@@ -154,6 +154,50 @@ export default function Settings() {
         </Link>
       </div>
 
+      {/* Empresa desenvolvedora */}
+      <div className="card space-y-3">
+        <h2 className="font-semibold text-neutral-700">Desenvolvido por</h2>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+          <div style={{ width: 48, height: 48, background: 'linear-gradient(135deg, #4A90D9, #2B6FBF)', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, flexShrink: 0 }}>
+            💡
+          </div>
+          <div>
+            <p style={{ fontWeight: 800, fontSize: 15, color: '#1A3A6B', margin: 0 }}>Alfeu Smart Solution</p>
+            <p style={{ fontSize: 12, color: '#7A9EB8', margin: 0, marginTop: 2 }}>Tecnologia que conecta pessoas</p>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 4 }}>
+          <a
+            href="https://wa.me/5591983594825"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ display: 'flex', alignItems: 'center', gap: 12, background: '#F0FDF4', border: '1.5px solid #BBF7D0', borderRadius: 14, padding: '12px 14px', textDecoration: 'none' }}
+          >
+            <div style={{ width: 36, height: 36, background: '#22C55E', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}>
+              📱
+            </div>
+            <div>
+              <p style={{ margin: 0, fontSize: 11, color: '#6B8DA8', fontWeight: 600 }}>WhatsApp</p>
+              <p style={{ margin: 0, fontSize: 14, fontWeight: 800, color: '#15803D' }}>(91) 98359-4825</p>
+            </div>
+          </a>
+
+          <a
+            href="mailto:alfeu.alves@ipainel.net"
+            style={{ display: 'flex', alignItems: 'center', gap: 12, background: '#EBF4FF', border: '1.5px solid #BFDBFE', borderRadius: 14, padding: '12px 14px', textDecoration: 'none' }}
+          >
+            <div style={{ width: 36, height: 36, background: '#4A90D9', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}>
+              ✉️
+            </div>
+            <div>
+              <p style={{ margin: 0, fontSize: 11, color: '#6B8DA8', fontWeight: 600 }}>E-mail</p>
+              <p style={{ margin: 0, fontSize: 14, fontWeight: 800, color: '#1A3A6B' }}>alfeu.alves@ipainel.net</p>
+            </div>
+          </a>
+        </div>
+      </div>
+
       {/* LGPD */}
       <div className="card space-y-2">
         <h2 className="font-semibold text-neutral-700">Privacidade e LGPD</h2>
