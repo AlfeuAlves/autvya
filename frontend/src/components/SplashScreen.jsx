@@ -41,31 +41,13 @@ export default function SplashScreen({ onDone }) {
           position: 'relative',
           width: 120,
           height: 120,
-          animation: 'spinY 3s linear infinite',
+          animation: 'spinY 6s linear infinite',
         }}>
           <img
             src="/logoaltvya.png"
             alt="AuTvya"
             style={{ width: 120, height: 120, objectFit: 'contain', display: 'block' }}
           />
-          {/* Brilho / reflexo passando */}
-          <div style={{
-            position: 'absolute',
-            inset: 0,
-            overflow: 'hidden',
-            borderRadius: 12,
-            pointerEvents: 'none',
-          }}>
-            <div style={{
-              position: 'absolute',
-              top: '-20%',
-              left: '-60%',
-              width: '40%',
-              height: '140%',
-              background: 'linear-gradient(105deg, transparent 0%, rgba(255,255,255,0.75) 50%, transparent 100%)',
-              animation: 'shine 2.2s ease-in-out infinite',
-            }} />
-          </div>
         </div>
       </div>
 
@@ -85,11 +67,7 @@ export default function SplashScreen({ onDone }) {
           0%   { transform: rotateY(0deg); }
           100% { transform: rotateY(360deg); }
         }
-        @keyframes shine {
-          0%   { left: -60%; }
-          100% { left: 130%; }
-        }
-        @keyframes fadeUp {
+@keyframes fadeUp {
           from { opacity: 0; transform: translateY(10px); }
           to   { opacity: 1; transform: translateY(0); }
         }
