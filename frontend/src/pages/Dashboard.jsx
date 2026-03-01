@@ -175,28 +175,9 @@ export default function Dashboard() {
       </div>
 
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px 20px 12px', position: 'relative' }}>
-        {/* Avatar do responsável */}
-        <div style={{ position: 'absolute', left: 20 }}>
-          {fotoUrl ? (
-            <img
-              src={fotoUrl}
-              alt="Foto de perfil"
-              style={{ width: 42, height: 42, borderRadius: '50%', objectFit: 'cover', border: '2.5px solid white', boxShadow: '0 2px 8px rgba(0,0,0,0.15)', cursor: 'pointer' }}
-              onClick={() => navigate('/configuracoes')}
-            />
-          ) : (
-            <div
-              onClick={() => navigate('/configuracoes')}
-              style={{ width: 42, height: 42, background: 'rgba(255,255,255,0.85)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, fontWeight: 900, color: '#4A90D9', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', backdropFilter: 'blur(6px)' }}
-            >
-              {user?.nome?.[0]?.toUpperCase() || '👤'}
-            </div>
-          )}
-        </div>
-
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 20px 12px' }}>
         <AuTvyaLogo size="lg" />
-        <div style={{ position: 'absolute', right: 20, display: 'flex', gap: 8 }}>
+        <div style={{ display: 'flex', gap: 8 }}>
           <Link to="/sobre" style={{ width: 40, height: 40, background: 'rgba(255,255,255,0.75)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, backdropFilter: 'blur(6px)', textDecoration: 'none' }}>
             🧠
           </Link>
@@ -244,8 +225,11 @@ export default function Dashboard() {
               <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 14 }}>
                 {/* Avatar */}
                 <div style={{ position: 'relative', flexShrink: 0 }}>
-                  <div style={{ width: 68, height: 68, borderRadius: '50%', background: 'linear-gradient(135deg, #A8E063, #56CCF2)', border: '3px solid white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 32, boxShadow: '0 3px 10px rgba(0,0,0,0.12)' }}>
-                    {crianca.nome[0].toUpperCase()}
+                  <div style={{ width: 68, height: 68, borderRadius: '50%', background: 'linear-gradient(135deg, #A8E063, #56CCF2)', border: '3px solid white', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 32, boxShadow: '0 3px 10px rgba(0,0,0,0.12)' }}>
+                    {fotoUrl
+                      ? <img src={fotoUrl} alt="Foto" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      : crianca.nome[0].toUpperCase()
+                    }
                   </div>
                   {/* Seta de trocar */}
                   <div style={{ position: 'absolute', bottom: 0, right: -4, width: 22, height: 22, background: '#4A90D9', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, color: 'white', border: '2px solid white' }}>
