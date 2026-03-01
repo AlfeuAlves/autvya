@@ -98,6 +98,12 @@ export default function Login() {
                 'Entrar'
               )}
             </button>
+
+            {loading && (
+              <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 text-sm text-blue-700 text-center animate-fade-in">
+                ⏳ O servidor pode levar até <strong>60 segundos</strong> para iniciar na primeira vez. Por favor, aguarde...
+              </div>
+            )}
           </form>
 
           <p className="text-center text-sm text-neutral-500 mt-6">
