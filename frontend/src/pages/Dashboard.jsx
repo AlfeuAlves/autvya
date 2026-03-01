@@ -349,7 +349,16 @@ export default function Dashboard() {
       </div>
 
       {/* Grama no rodapé */}
-      <div style={{ position: 'fixed', bottom: 56, left: 0, right: 0, height: 55, background: 'linear-gradient(180deg, #7BC745 0%, #5DA828 100%)', borderRadius: '50% 50% 0 0 / 18px 18px 0 0', zIndex: 0 }} />
+      <div style={{ position: 'fixed', bottom: 56, left: 0, right: 0, height: 55, background: 'linear-gradient(180deg, #7BC745 0%, #5DA828 100%)', borderRadius: '50% 50% 0 0 / 18px 18px 0 0', zIndex: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ textAlign: 'center', lineHeight: 1.3, marginTop: 10 }}>
+          <p style={{ margin: 0, fontSize: 10, fontWeight: 800, color: 'rgba(255,255,255,0.9)', letterSpacing: '0.04em' }}>
+            Alfeu Smart Solution
+          </p>
+          <p style={{ margin: 0, fontSize: 10, fontWeight: 600, color: 'rgba(255,255,255,0.75)' }}>
+            (91) 98359-4825
+          </p>
+        </div>
+      </div>
 
       {/* Mascote no canto */}
       <div style={{ position: 'fixed', bottom: 64, left: 14, zIndex: 1 }}>
