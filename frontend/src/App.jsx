@@ -4,6 +4,8 @@ import { AuthProvider, useAuth } from './context/AuthContext.jsx';
 import Layout from './components/Layout.jsx';
 import SplashScreen from './components/SplashScreen.jsx';
 
+import Landing from './pages/Landing.jsx';
+import Admin from './pages/Admin.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import Dashboard from './pages/Dashboard.jsx';
@@ -54,6 +56,16 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
+          {/* Landing page – logado redireciona para /dashboard */}
+          <Route
+            path="/"
+            element={
+              <PublicRoute>
+                <Landing />
+              </PublicRoute>
+            }
+          />
+
           {/* Rotas públicas */}
           <Route
             path="/login"
@@ -82,30 +94,29 @@ export default function App() {
             }
           />
 
-          {/* Rotas protegidas com layout */}
+          {/* Página Sobre pública */}
+          <Route path="/sobre-publica" element={<Sobre />} />
+
+          {/* Rotas protegidas com layout (pathless layout route) */}
           <Route
-            path="/"
             element={
               <PrivateRoute>
                 <Layout />
               </PrivateRoute>
             }
           >
-            <Route index element={<Navigate to="/dashboard" replace />} />
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="criancas/nova" element={<ChildProfile />} />
-            <Route path="criancas/:id/editar" element={<ChildProfile />} />
-            <Route path="relatorios" element={<Reports />} />
-            <Route path="relatorios/:criancaId" element={<Reports />} />
-            <Route path="configuracoes" element={<Settings />} />
-            <Route path="sobre" element={<Sobre />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/criancas/nova" element={<ChildProfile />} />
+            <Route path="/criancas/:id/editar" element={<ChildProfile />} />
+            <Route path="/relatorios" element={<Reports />} />
+            <Route path="/relatorios/:criancaId" element={<Reports />} />
+            <Route path="/configuracoes" element={<Settings />} />
+            <Route path="/sobre" element={<Sobre />} />
+            <Route path="/admin" element={<Admin />} />
           </Route>
 
-          {/* Página Sobre acessível sem autenticação também */}
-          <Route path="/sobre-publica" element={<Sobre />} />
-
           {/* Fallback */}
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

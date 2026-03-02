@@ -1,13 +1,16 @@
 import { Outlet, NavLink, useLocation } from 'react-router-dom';
-
-const navItems = [
-  { to: '/dashboard', label: 'Início', icon: '🏠' },
-  { to: '/relatorios', label: 'Relatórios', icon: '📊' },
-  { to: '/configuracoes', label: 'Config.', icon: '⚙️' },
-];
+import { useAuth } from '../context/AuthContext.jsx';
 
 export default function Layout() {
+  const { user } = useAuth();
   const location = useLocation();
+
+  const navItems = [
+    { to: '/dashboard',   label: 'Início',    icon: '🏠' },
+    { to: '/relatorios',  label: 'Relatórios', icon: '📊' },
+    { to: '/configuracoes', label: 'Config.',  icon: '⚙️' },
+    ...(user?.isAdmin ? [{ to: '/admin', label: 'Admin', icon: '🛡️' }] : []),
+  ];
   const isDashboard = location.pathname === '/dashboard' || location.pathname === '/';
 
   // Dashboard tem seu próprio fundo — demais páginas usam fundo neutro

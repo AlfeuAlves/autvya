@@ -132,7 +132,9 @@ export default function ChildInterface() {
 
   // Chamado por qualquer fase quando a criança interage
   function handleInteracao(botaoId, extras = {}) {
-    speak(SYMBOLS[botaoId]?.tts || botaoId);
+    // Fase 3 gerencia o próprio TTS (motor planning direto em adicionarSimbolo)
+    // Fases 1 e 2 dependem daqui para falar
+    if (extras.nivel !== 3) speak(SYMBOLS[botaoId]?.tts || botaoId);
     setRobotWaving(true);
     setTimeout(() => setRobotWaving(false), 800);
 

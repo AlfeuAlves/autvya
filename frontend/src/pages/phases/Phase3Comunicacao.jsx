@@ -102,7 +102,12 @@ export default function Phase3Comunicacao({ onInteracao, speak }) {
 
   function falarFrase() {
     if (frase.length === 0) return;
-    const texto = frase.map((id) => SYMBOLS[id]?.tts || id).join(' ');
+    // 'mais' é símbolo de navegação — não é pronunciado na frase
+    const texto = frase
+      .filter((id) => id !== 'mais')
+      .map((id) => SYMBOLS[id]?.tts || id)
+      .join(' ');
+    if (!texto) return;
     speak?.(texto);
     setFalando(true);
     setTimeout(() => setFalando(false), 1500);
@@ -123,84 +128,91 @@ export default function Phase3Comunicacao({ onInteracao, speak }) {
   }
 
   return (
-    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '0 12px', gap: 10, position: 'relative', zIndex: 2 }}>
+    <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'row', gap: 10, padding: '0 10px 10px', position: 'relative', zIndex: 2 }}>
 
-      {/* HUD */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 4 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <span style={{ fontSize: 18 }}>⭐</span>
-          <span style={{ fontWeight: 900, fontSize: 16, color: '#1A3A6B' }}>{estrelas}</span>
+      {/* ── PAINEL ESQUERDO: frase + controles ────────────────────────── */}
+      <div style={{ width: 168, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
+
+        {/* HUD */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <span style={{ fontSize: 16 }}>⭐</span>
+            <span style={{ fontWeight: 900, fontSize: 15, color: '#1A3A6B' }}>{estrelas}</span>
+          </div>
         </div>
+
+        {/* Faixa de sentença */}
+        <div style={{ background: 'rgba(255,255,255,0.92)', borderRadius: 14, padding: '8px 10px', minHeight: 52, flex: 1, backdropFilter: 'blur(8px)', boxShadow: '0 2px 10px rgba(0,0,0,0.08)', overflowY: 'auto' }}>
+          {frase.length === 0 ? (
+            <div style={{ color: '#9BB8D0', fontSize: 11, fontStyle: 'italic' }}>
+              Toque nos símbolos para montar sua mensagem...
+            </div>
+          ) : (
+            <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap', alignItems: 'flex-start' }}>
+              {frase.map((id, i) => (
+                <FrasePill key={i} id={id} index={i} onRemove={removerSimbolo} />
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Botão Falar */}
+        <button
+          onPointerDown={falarFrase}
+          disabled={frase.length === 0}
+          style={{ background: falando ? '#3A7BC8' : '#4A90D9', color: 'white', border: 'none', borderRadius: 14, padding: '12px 0', fontWeight: 900, fontSize: 14, cursor: frase.length === 0 ? 'default' : 'pointer', opacity: frase.length === 0 ? 0.5 : 1, boxShadow: frase.length > 0 ? '0 5px 0 #1A4F8A' : 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, transition: 'all 0.1s', width: '100%' }}
+        >
+          🔊 Falar
+        </button>
+
+        {/* Botão Limpar */}
+        <button
+          onPointerDown={limparFrase}
+          disabled={frase.length === 0}
+          style={{ background: 'rgba(255,255,255,0.85)', color: '#E83535', border: '2px solid #FFCDD2', borderRadius: 14, padding: '9px 0', fontWeight: 800, fontSize: 13, cursor: frase.length === 0 ? 'default' : 'pointer', opacity: frase.length === 0 ? 0.5 : 1, width: '100%' }}
+        >
+          🗑️ Limpar
+        </button>
+
+        {/* Templates */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+          {FASE3_TEMPLATES.map((t) => (
+            <button
+              key={t.label}
+              onPointerDown={() => aplicarTemplate(t)}
+              style={{ background: 'rgba(255,255,255,0.85)', border: '2px solid #BFDBFE', borderRadius: 10, padding: '6px 8px', fontWeight: 700, fontSize: 11, color: '#1A3A6B', cursor: 'pointer', textAlign: 'left', backdropFilter: 'blur(4px)' }}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Última frase */}
         {historico.length > 0 && (
-          <div style={{ fontSize: 11, color: '#7A9EB8', fontWeight: 600, textAlign: 'right' }}>
+          <div style={{ fontSize: 10, color: '#7A9EB8', fontWeight: 600, lineHeight: 1.4 }}>
             Última: "{historico[0]}"
           </div>
         )}
       </div>
 
-      {/* ── Faixa de sentença ─────────────────────────────────────────── */}
-      <div style={{ background: 'rgba(255,255,255,0.9)', borderRadius: 18, padding: '10px 12px', minHeight: 58, backdropFilter: 'blur(8px)', boxShadow: '0 2px 12px rgba(0,0,0,0.08)' }}>
-        {frase.length === 0 ? (
-          <div style={{ color: '#9BB8D0', fontSize: 13, fontStyle: 'italic', padding: '4px 0' }}>
-            Toque nos símbolos para montar sua mensagem...
-          </div>
-        ) : (
-          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
-            {frase.map((id, i) => (
-              <FrasePill key={i} id={id} index={i} onRemove={removerSimbolo} />
-            ))}
-          </div>
-        )}
-      </div>
+      {/* ── PAINEL DIREITO: abas + grade completa ─────────────────────── */}
+      <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 6 }}>
 
-      {/* ── Botões de ação ────────────────────────────────────────────── */}
-      <div style={{ display: 'flex', gap: 8 }}>
-        <button
-          onPointerDown={falarFrase}
-          disabled={frase.length === 0}
-          style={{ flex: 2, background: falando ? '#3A7BC8' : '#4A90D9', color: 'white', border: 'none', borderRadius: 14, padding: '11px 0', fontWeight: 900, fontSize: 15, cursor: frase.length === 0 ? 'default' : 'pointer', opacity: frase.length === 0 ? 0.5 : 1, boxShadow: frase.length > 0 ? '0 5px 0 #1A4F8A' : 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, transition: 'all 0.1s' }}
-        >
-          🔊 Falar
-        </button>
-        <button
-          onPointerDown={limparFrase}
-          disabled={frase.length === 0}
-          style={{ flex: 1, background: 'rgba(255,255,255,0.85)', color: '#E83535', border: '2px solid #FFCDD2', borderRadius: 14, padding: '11px 0', fontWeight: 800, fontSize: 14, cursor: frase.length === 0 ? 'default' : 'pointer', opacity: frase.length === 0 ? 0.5 : 1 }}
-        >
-          🗑️ Limpar
-        </button>
-      </div>
-
-      {/* ── Templates de frases rápidas ───────────────────────────────── */}
-      <div style={{ display: 'flex', gap: 6, overflowX: 'auto', paddingBottom: 2 }}>
-        {FASE3_TEMPLATES.map((t) => (
-          <button
-            key={t.label}
-            onPointerDown={() => aplicarTemplate(t)}
-            style={{ flexShrink: 0, background: 'rgba(255,255,255,0.85)', border: '2px solid #BFDBFE', borderRadius: 12, padding: '6px 12px', fontWeight: 700, fontSize: 12, color: '#1A3A6B', cursor: 'pointer', whiteSpace: 'nowrap', backdropFilter: 'blur(4px)' }}
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
-
-      {/* ── Abas de vocabulário ───────────────────────────────────────── */}
-      <div>
         {/* Tab bar */}
-        <div style={{ display: 'flex', background: 'rgba(255,255,255,0.7)', borderRadius: 14, padding: 3, gap: 2, marginBottom: 8, backdropFilter: 'blur(6px)' }}>
+        <div style={{ display: 'flex', background: 'rgba(255,255,255,0.7)', borderRadius: 12, padding: 3, gap: 2, backdropFilter: 'blur(6px)', flexShrink: 0 }}>
           {FASE3_ABAS.map((aba) => (
             <button
               key={aba.id}
               onPointerDown={() => setAbaAtiva(aba.id)}
-              style={{ flex: 1, padding: '7px 2px', borderRadius: 11, border: 'none', cursor: 'pointer', fontWeight: 700, fontSize: 11, background: abaAtiva === aba.id ? 'white' : 'transparent', color: abaAtiva === aba.id ? '#1A3A6B' : '#7A9EB8', boxShadow: abaAtiva === aba.id ? '0 1px 6px rgba(0,0,0,0.1)' : 'none', transition: 'all 0.15s', whiteSpace: 'nowrap' }}
+              style={{ flex: 1, padding: '6px 2px', borderRadius: 9, border: 'none', cursor: 'pointer', fontWeight: 700, fontSize: 10, background: abaAtiva === aba.id ? 'white' : 'transparent', color: abaAtiva === aba.id ? '#1A3A6B' : '#7A9EB8', boxShadow: abaAtiva === aba.id ? '0 1px 6px rgba(0,0,0,0.1)' : 'none', transition: 'all 0.15s', whiteSpace: 'nowrap' }}
             >
               {aba.label}
             </button>
           ))}
         </div>
 
-        {/* Grade de símbolos – 4 colunas */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, maxHeight: 230, overflowY: 'auto', paddingBottom: 4 }}>
+        {/* Grade de símbolos — sem maxHeight, todos visíveis */}
+        <div style={{ flex: 1, minHeight: 0, display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 7, alignContent: 'start' }}>
           {abaAtual.simbolos.map((id) => (
             <MiniSymbol key={id} id={id} onPress={adicionarSimbolo} />
           ))}
