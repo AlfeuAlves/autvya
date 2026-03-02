@@ -66,7 +66,7 @@ async function login(req, res) {
 
     return res.json({
       token,
-      user: { id: user.id, email: user.email, nome: user.nome },
+      user: { id: user.id, email: user.email, nome: user.nome, isAdmin: user.isAdmin },
     });
   } catch (err) {
     console.error('Erro no login:', err);
@@ -78,7 +78,7 @@ async function me(req, res) {
   try {
     const user = await prisma.user.findUnique({
       where: { id: req.userId },
-      select: { id: true, email: true, nome: true, criadoEm: true },
+      select: { id: true, email: true, nome: true, isAdmin: true, criadoEm: true },
     });
 
     if (!user) {

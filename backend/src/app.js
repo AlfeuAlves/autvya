@@ -9,6 +9,7 @@ const childrenRoutes = require('./routes/children.routes');
 const interactionsRoutes = require('./routes/interactions.routes');
 const aiRoutes = require('./routes/ai.routes');
 const reportsRoutes = require('./routes/reports.routes');
+const adminRoutes = require('./routes/admin.routes');
 
 const app = express();
 
@@ -38,6 +39,7 @@ app.use('/api/v1/children', childrenRoutes);
 app.use('/api/v1/interactions', interactionsRoutes);
 app.use('/api/v1/ai', aiRoutes);
 app.use('/api/v1/reports', reportsRoutes);
+app.use('/api/v1/admin', adminRoutes);
 
 // Health check
 app.get('/health', (req, res) => {
